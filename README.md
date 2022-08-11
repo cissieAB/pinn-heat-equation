@@ -3,8 +3,8 @@ This project is to solve a 2D heat equation with [PINN](https://en.wikipedia.org
  The math description and Python implementation is given by the [Jupyter script](./PhasmExampleHeatEquation.ipynb).
  It is one of the JLab EPSCI [PHASM](https://github.com/nathanwbrei/phasm) examples.
 
-This stand-alone repo is created to test the libtorch C++ APIs without considering
- the compatibility to the other PHASM codebase.
+This stand-alone repo is created to test the libtorch C++ APIs without
+ considering the compatibility to the other PHASM codebase.
  It can also be used as the backup of the main repo.
 
 ## Envirenment
@@ -21,9 +21,10 @@ libtorch: 1.12.1 + Linux + LibTorch + C++/Java + cu11.3 + pre-cxx11abi
 OS: CentOS Linux 7 (Core)
 Kernel: Linux 3.10.0-1160.71.1.el7.x86_64
 ```
+
 As I have no root control of the system, the library version problem is not well handled.
  `cxx11 ABI libtorch` should be used but failed with a low `glibc`
- (looks like `glibc 2.27` is required) problem.
+ (description [here](https://github.com/nathanwbrei/phasm/blob/gpu/farm_guide.md#notes)) problem.
  Then I use the `pre-cxx11 ABI libtorch` for now.
 
 
