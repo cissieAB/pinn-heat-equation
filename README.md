@@ -7,7 +7,7 @@ This stand-alone repo is created to test the libtorch C++ APIs without
  considering the compatibility to the other PHASM codebase.
  It can also be used as the backup of the main repo.
 
-## Envirenment
+## Environment
 The repo is tested on the JLab ifarm GPU node with below configurations.
 
 ```
@@ -27,8 +27,35 @@ As I have no root control of the system, the library version problem is not well
  (description [here](https://github.com/nathanwbrei/phasm/blob/gpu/farm_guide.md#notes)) problem.
  Then I use the `pre-cxx11 ABI libtorch` for now.
 
+## Build the project
+
+```bash
+# add torch lib to path
+export LD_LIBRARY_PATH=$DEPS/libtorch/lib:$LD_LIBRARY_PATH
+
+# build project
+mkdir build
+cd build
+cmake -DCMAKE_PREFIX_PATH="/path/to/libtorch;/path/to/cuDNN" ..
+make
+```
+
+### `libtorch` and `cuDNN` installation packages
+[`cuDNN`](https://developer.nvidia.com/rdp/cudnn-download) and
+ [`libtorch`](https://pytorch.org/get-started/locally/)
+ can be accessed at the official sites.
+ The packages I am using are given as below.
+
+```bash
+cudnn-linux-x86_64-8.4.1.50_cuda11.6-archive.tar.xz
+libtorch-cxx11-abi-shared-with-deps-1.12.1+cu113.zip  # cxx11 ABI, not used
+libtorch-shared-with-deps-1.12.0+cu113.zip  # Pre-cxx11 ABI, used in this repo
+```
+
+Unzip these packages and they will make up of your `/path/to/libtorch` and `/path/to/cuDNN`.
 
 ## References
 - [PINN original paper](https://www.sciencedirect.com/science/article/pii/S0021999118307125?casa_token=3bln19-QiY8AAAAA:fljJ0paZDeCUJFpWkSxJQrd1xGDEnrUxdXOIWfpZZ7N0MnevxvVNLDEEEMyzX2_IRkX7Hco9YME): Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations
-- [Pytorch C++ API](https://pytorch.org/cppdocs/)
+- [Pytorch C++ API documenation](https://pytorch.org/cppdocs/)
+- [Pytorch C++ examples](https://github.com/pytorch/examples/tree/main/cpp)
 - PINN Pytorch implementation: https://github.com/jayroxis/PINNs
