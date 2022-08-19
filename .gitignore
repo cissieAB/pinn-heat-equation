@@ -1,6 +1,7 @@
-deps/
+
 build/
-.DS_Store                                                             
+.DS_Store
 cmake-build*/
 *-checkpoint.ipynb
+*.out
 

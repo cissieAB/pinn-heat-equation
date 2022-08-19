@@ -31,7 +31,7 @@ As I have no root control of the system, the library version problem is not well
 
 ```bash
 # add torch lib to path
-export LD_LIBRARY_PATH=$DEPS/libtorch/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/path/to/libtorch/lib:$LD_LIBRARY_PATH
 
 # build project
 mkdir build
