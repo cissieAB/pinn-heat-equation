@@ -40,7 +40,7 @@ cmake -DCMAKE_PREFIX_PATH="/path/to/libtorch;/path/to/cuDNN" ..
 make
 ```
 
-### `libtorch` and `cuDNN` installation packages
+### `libtorch` and `cuDNN` installation
 [`cuDNN`](https://developer.nvidia.com/rdp/cudnn-download) and
  [`libtorch`](https://pytorch.org/get-started/locally/)
  can be accessed at the official sites.
