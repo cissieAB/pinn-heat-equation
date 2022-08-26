@@ -1,6 +1,6 @@
 # Solving 2D Heat Equation with PINN
 This project is to solve a 2D heat equation with [PINN](https://en.wikipedia.org/wiki/Physics-informed_neural_networks).
- The math description and Python implementation is given by the [Jupyter script](./PhasmExampleHeatEquation.ipynb).
+ The math description and Python implementation is given by the [Jupyter script](https://github.com/nathanwbrei/phasm/blob/main/python/PhasmExampleHeatEquation.ipynb).
  It is one of the JLab EPSCI [PHASM](https://github.com/nathanwbrei/phasm) examples.
 
 This stand-alone repo is created to test the libtorch C++ APIs without

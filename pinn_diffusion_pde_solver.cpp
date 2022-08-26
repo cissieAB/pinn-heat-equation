@@ -5,7 +5,7 @@
 Created by Xinxin Mei on 7/29/22.
 
 Try to implement the heat/diffusion equation defined in ../pde_solver with cpp PINN.
-The Jupyter code is at ../../Python/PhasmExampleHeatEquation.ipynb
+The Jupyter code is at https://github.com/nathanwbrei/phasm/blob/main/python/PhasmExampleHeatEquation.ipynb
 
 References:
 - Pytorch official tutorial:
@@ -49,7 +49,8 @@ const int NN_HIDDEN_SIZE = 20;
 /// NN structure declaration
 struct HeatPINNNetImpl: torch::nn::Module {
     /**
-     * Declare the NN to match the Python code in ../../Python/PhasmExampleHeatEquation.ipynb
+     * Declare the NN to match the Python code in
+     * https://github.com/nathanwbrei/phasm/blob/main/python/PhasmExampleHeatEquation.ipynb
      * NN(
           (layers): Sequential(
             (input): Linear(in_features=2, out_features=20, bias=True)

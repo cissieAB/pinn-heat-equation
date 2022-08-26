@@ -4,7 +4,6 @@
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
 #SBATCH --mail-type=END,FAIL
-#SBATCH --mail-user=xmei@jlab.org
 #SBATCH --output=ncu_%j.out
 
 set -euxo pipefail
@@ -21,16 +20,12 @@ FLOPS_TENSOR=sm__inst_executed_pipe_tensor.sum
 FLOPS_PREFIX=sm__sass_thread_inst_executed_op
 FLOPS_SUFFIX=pred_on.sum
 
-
 CC=`which gcc`
 CXX=`which g++`
 
-echo "CC=${CC}"
-echo "CXX=${CXX}"
-
 hostname -s
 
-cd /work/epsci/xmei/projects/pinn-heat-equation
+cd /work/epsci/xmei/projects/pinn-heat-equation  # working dir
 pwd
 
 echo "Using ncu to profile PINN-heat-equation"
