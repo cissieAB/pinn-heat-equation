@@ -25,7 +25,7 @@ CXX=`which g++`
 
 hostname -s
 
-cd /work/epsci/xmei/projects/pinn-heat-equation  # working dir
+cd $WKDIR  # set your working dir here
 pwd
 
 echo "Using ncu to profile PINN-heat-equation"
@@ -33,6 +33,7 @@ echo "Using ncu to profile PINN-heat-equation"
 echo "Group: time"
 TIME_AVG=sm__cycles_elapsed.avg
 TIME_RATE=sm__cycles_elapsed.avg.per_second
+# NCU command usage: ncu --metrics $metric1,$metric2 --csv $application
 srun ncu --metrics $TIME_AVG,$TIME_RATE --csv ./build/pinn >> time.csv
 
 echo "Group: bytes_cache"

@@ -36,8 +36,8 @@ const int BD_INPUT_SIZE = BD_SIZE * 2;
 const int ADAM_STEPS = 1000;
 
 // max step is set based on experience. 5000 steps make loss at e-5 level.
-// const int MAX_STEPS = 5000;
-const int MAX_STEPS = 4;  // from ncu compiling
+const int MAX_STEPS = 5000;
+// const int MAX_STEPS = 1;  // from ncu compiling
 // criteria for stop training.
 // When loss is at 1.x~e-5, it will stop degrading even the training continues
 const float TARGET_LOSS = 5.0e-5;

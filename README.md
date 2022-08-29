@@ -52,10 +52,16 @@ libtorch-cxx11-abi-shared-with-deps-1.12.1+cu113.zip  # cxx11 ABI, not used
 libtorch-shared-with-deps-1.12.0+cu113.zip  # Pre-cxx11 ABI, used in this repo
 ```
 
-Unzip these packages and they will make up of your `/path/to/libtorch` and `/path/to/cuDNN`.
+Unzip these packages, and they will make up of your `/path/to/libtorch` and `/path/to/cuDNN`.
+
+## NCU profiling
+A [ncu profiling](docs/prof_res.md) is conducted on the training process to study the behaviours
+ of the kernels. The [Roofline model](https://crd.lbl.gov/divisions/amcr/computer-science-amcr/par/research/roofline/)
+ is utilized to identify the bottleneck of the application.
 
 ## References
 - [PINN original paper](https://www.sciencedirect.com/science/article/pii/S0021999118307125?casa_token=3bln19-QiY8AAAAA:fljJ0paZDeCUJFpWkSxJQrd1xGDEnrUxdXOIWfpZZ7N0MnevxvVNLDEEEMyzX2_IRkX7Hco9YME): Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations
 - [Pytorch C++ API documenation](https://pytorch.org/cppdocs/)
 - [Pytorch C++ examples](https://github.com/pytorch/examples/tree/main/cpp)
 - PINN Pytorch implementation: https://github.com/jayroxis/PINNs
+- Roofline profiling paper: https://arxiv.org/abs/2009.02449
