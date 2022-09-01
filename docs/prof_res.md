@@ -1,6 +1,6 @@
 # The Roofline Analysis of the PINN-Heat Equation
 
-This doc studies how to use [Nsight Compute CLI](https://docs.nvidia.com/nsight-compute/NsightComputeCli/index.html)
+This doc describes how to use [Nsight Compute CLI](https://docs.nvidia.com/nsight-compute/NsightComputeCli/index.html)
  (ncu) to study the performance of the PINN-heat equation solution.
 
 ## Problem description
@@ -101,25 +101,26 @@ The code is run on the farm node `sciml2103` with one Tesla T4 GPU.
 
 
 ### Time distribution
-If we label the 31 kernels as `k1`-`k31`, the percentage time distribution
- is shown in the below figure.
 
 ![time](time_distribution.png "Time distribution")
 
-The top 8 time-consuming kernels (with percentage values > 5%)
- are listed in the below table,
- which occupies more than 83% of the overall execution time in total.
+Based on our profiling result, one iteration takes about 6.75 milliseconds.
+ If we label the 31 kernels as `k1`-`k31`, the percentage time cost by kernels
+ is shown in the above figure. We list the top 9 time-consuming kernels
+ (with percentage values $\geq $ 4%) in the below table, which occupies
+ about 87.2% of the total execution time.
 
 Kernel name | Kernel label | Kernel type | Percentage (%) 
 :---|-------------:| ---: |:--------------:|
 volta_sgemm_32x128_nt |          k29 | Compute | 29.43
-at::native::reduce_kernel<(int)128, (int)4, ...> |  k7 | Compute| 12.79
-at::native::vectorized_elementwise_kernel<(int)4, at::native::BinaryFunctor<float, float, float, at::native::MulFunctor<float>, ...>, ...> | k13 | Non-compute| 9.97
+at::native::reduce_kernel<(int)128, (int)4, ...> |           k7 | Compute| 12.79
+at::native::vectorized_elementwise_kernel<(int)4, at::native::BinaryFunctor<float, float, float, at::native::MulFunctor<float>, ...>, ...> |          k13 | Non-compute| 9.97
 at::native::vectorized_elementwise_kernel<(int)4, at::native::CUDAFunctor_add, ...> |          k15 | Non-compute | 8.21
-volta_sgemm_32x128_nn | k28 | Compute | 6.01
+volta_sgemm_32x128_nn |          k28 | Compute | 6.01
 volta_sgemm_32x128_tn |          k30 | Compute | 5.97
 splitKreduce_kernel |          k25 | Compute | 5.47
-at::native::vectorized_elementwise_kernel<(int)4, at::native::tanh_backward_kernel_cuda...> | k20| Compute | 5.31
+at::native::vectorized_elementwise_kernel<(int)4, at::native::tanh_backward_kernel_cuda...> |          k20 | Compute | 5.31
+void at::native::vectorized_elementwise_kernel<(int)4, at::native::BUnaryFunctor<..., at::native::MulFunctor<float>>, ...> |  k14 | Non-compute | 4.05
 
 We can find from the table that the matrix multiplication (`sgemm`) and
  reduce are the two dominant operations.
@@ -129,45 +130,59 @@ We can find from the table that the matrix multiplication (`sgemm`) and
 the time of the forward and the backward phase.*
 
 As [Ref 1](https://arxiv.org/pdf/2009.05257.pdf) pointed out, the execution time of the non-compute kernels are non-negotiable.
- In the current implementation, `k13` and `k15` are the most time-consuming
- non-compute kernels, which takes about 18.2% of the total time.
+ In the current implementation, `k13`, `k15` and `k14` are the most time-consuming
+ non-compute kernels, which takes about 22.2% of the total time.
 
-### Roofine analysis
+### Hierarchical Roofine analysis
 ![roofline](roofline.png "Roofline")
 
 We plot the aggregated AI of the 31 kernels in the above roofline chart, with
  the y-axis as the throughput and the x-axis as the AI.
 
-There are two main components in a roofline chart, the lines
- and the scatter. The lines stand for the hardware limit, which is irrelevant
+There are two main components in a roofline chart: the lines
+ and the scattered markers. The lines stand for the hardware limit, which is irrelevant
  to the GPU application. On the farm T4 GPU, we get a measured peak f32 compute
- power of 8.1 TFLOP/s, a measured peak L1 cache bandwidth of 4051.6 GB/s,
- a measured peak L2 cache bandwidth of 5760.9 GB/s and a DRAM (HBM) bandwidth of
+ power of 8.1 TFLOP/s, a L1 cache bandwidth of 4051.6 GB/s,
+ a L2 cache bandwidth of 5760.9 GB/s and a DRAM (HBM) bandwidth of
  241.6 GB/s. When the AI is low, the peak throughput is restricted by the
- memory bandwidth, which is called to be memory-bounded. In contrast, when
+ memory bandwidth, also called to be memory-bounded. In contrast, when
  the AI is high, the throughput is compute-bounded.
 
-The scatter stands for the application's AI. The methodology to calculate the
- AI is stated in the [metric aggregation](#metric-aggregation) part.
- For every kernel, there are 3 AI values corresponding to the same throughput,
+The scattered markers stand for the application's AIs. The methodology to
+ calculate the AI is stated in the [metric aggregation](#metric-aggregation) part.
+ For each kernel, there are 3 AI values corresponding to the same throughput,
  i.e., L1-AI represented with the circle marker, L2-AI represented with the
- triangle marker, and HBM-AI represented with the square marker. Besides,
- the size of the marker is proportional to the kernel's execution time.
+ triangle marker, and HBM-AI represented with the square marker. In addition,
+ the size of the marker is proportional to the kernel's execution time, and the
+ 3 AIs of the same kernel are of the same size.
 
-The closer the AI is to the limit, the more efficiently the GPU is used.
+#### Performance bottleneck
+The closer the AI marker to the limit, the higher throughput the GPU achieves.
  In the above roofline chart, L1 and L2 AIs are far away
- from the limit, which indicates that the GPU core utilization is low,
- where the root cause is we are using a small NN. If the NN is 
- more complicated with larger layer counts/dimensions, and/or larger input
- datasets, the GPU utilization would be improved. However, as PINN
+ from the limit, which indicates that the GPU utilization is low,
+ where the root cause is that we are using a small NN. If the NN structure is
+ more complicated, for examole, with larger layer counts and/or dimensions, and/or
+ with larger input datasets, the GPU utilization would be higher. However, as PINN
  is designed without using large dataset, and increasing the complexity of
- the NN does not help to reduce $L_2$ error much, I do not see much necessity
- in changing the NN complexity here.
+ the NN does not help to reduce the $L_2$ error much, I do not see much necessity
+ in improving the NN complexity here.
 
+#### Top time-consuming kernels
+*TODO: list the AIs of the top-9 time-consuming kernels, compute the
+utilization rate.*
+
+## Summary
+We summarize the findings of our PINN implementation as follows.
+
+- Matrix multiplication and reduce are the most time-consuming operations
+ in the current implementation. Non-compute kernels also take up
+ considerable time.
+- The overall performance bottleneck is the low GPU utilization, caused by
+ the small dataset and simple NN structure.
 
 ## Problems and to-dos
 * I was unable to declare a NN structure of double precision with C++ APIs.
- I do not whether this is restricted by my knowledge, or by the libtorch API
+ I do not know whether this is restricted by my knowledge, or by the libtorch API
  itself.
 
 * The current problem dimension $N=65$ shows a low utilization of the
@@ -181,6 +196,8 @@ The closer the AI is to the limit, the more efficiently the GPU is used.
  cores are never used. Investigation into this issue is critical to further
  improve the application's performance.
 
+* More data processing. Like the accurate compute/non-compute kernel ratio, the
+ utilization rate compared to the limit of each kernel, etc.
 
 ## References
 1. NCU Roofline profiling paper: https://arxiv.org/pdf/2009.05257.pdf
