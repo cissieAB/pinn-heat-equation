@@ -44,7 +44,8 @@ def get_ridge_data():
 def plot_roofline(csv_path):
     df = pd.read_csv(csv_path)
     L1_AI, L2_AI, HBM_AI, f32_GFLOPS, time_us = \
-        df['L1_AI'], df['L2_AI'], df['HBM_AI'], df['f32_GFLOPS'], df['time_us']/8
+        df['L1_AI'], df['L2_AI'], df['HBM_AI'], df['f32_GFLOPS'], \
+        df['time_us']/8  # df['time_us']/8 to adjust maker size
 
     x, y_L1, y_L2, y_HBM = get_ridge_data()  # the roofline ridges
 
