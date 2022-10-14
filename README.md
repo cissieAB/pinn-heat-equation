@@ -58,6 +58,10 @@ Unzip these packages, and they will make up of your `/path/to/libtorch` and `/pa
 A [ncu profiling](docs/prof_res.md) is conducted on the training process to study the behaviours
  of the kernels. The [Roofline model](https://crd.lbl.gov/divisions/amcr/computer-science-amcr/par/research/roofline/)
  is utilized to identify the bottleneck of the application.
+ 
+## TODOs
+- [ ] Add the original Gauss-Seidel iteration and timing functions for the whole process. 
+- [ ] Reshape the NN structure to achieve higher throuput. 
 
 ## References
 - [PINN original paper](https://www.sciencedirect.com/science/article/pii/S0021999118307125?casa_token=3bln19-QiY8AAAAA:fljJ0paZDeCUJFpWkSxJQrd1xGDEnrUxdXOIWfpZZ7N0MnevxvVNLDEEEMyzX2_IRkX7Hco9YME): Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations
